@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const eggSchema = new mongoose.Schema({
+  server: String,
   count: Number,
 })
 

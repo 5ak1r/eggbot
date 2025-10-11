@@ -27,18 +27,21 @@ const client = new Client({
   ]
 })
 
-client.once('ready', () => {
+client.once('clientReady', () => {
   console.log(`successfully logged in as ${client.user.tag}`)
 })
 
 client.on('messageCreate', async (message) => {
-  if(message.author.bot) return
+  if(message.author.bot || !message.guild) return
 
   if(message.content.toLowerCase().includes('egg')) {
     try {
       const updatedEgg = await Egg.findOneAndUpdate(
-        {},
-        {$inc: {count: 1}},
+        {server: message.guild.id},
+        {
+          $inc: {count: 1},
+          $setOnInsert: {server: message.guild.id}
+        },
         {new: true, upsert: true}
       )
 
