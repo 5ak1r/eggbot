@@ -1,0 +1,25 @@
+{
+  "name": "eggbot",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/5ak1r/eggbot#readme",
+  "bugs": {
+    "url": "https://github.com/5ak1r/eggbot/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/5ak1r/eggbot.git"
+  },
+  "license": "MIT",
+  "author": "Sakir Azimkar",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "discord.js": "^14.23.2",
+    "dotenv": "^17.2.3",
+    "mongoose": "^8.19.1"
+  }
+}
