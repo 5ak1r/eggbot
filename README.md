@@ -6,7 +6,7 @@ Welcome to eggbot! This is a bot that records the amount of times the word "egg"
 
 ### v0.0.2
 
-Containerisation implemented. Still learning basics of containerisation so this may not be perfect right now.
+Containerisation implemented. Still learning basics of containerisation so this may not be perfect right now. Also got a workflow going (if it ever works)!
 
 ### v0.0.1
 
