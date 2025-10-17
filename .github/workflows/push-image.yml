@@ -22,11 +22,18 @@ jobs:
 
       - name: build image
         run: |
-          podman pull ghcr.io/${{ github.actor }}/eggbot:latest || true
-          podman build \
-            --layers \
-            --cache-from ghcr.io/${{ github.actor }}/eggbot:latest \
-            -t ghcr.io/${{ github.actor }}/eggbot:${{ github.sha }} .
+          IMAGE=ghcr.io/${{ github.actor }}/eggbot:latest
+
+          if podman image exists $IMAGE; then
+            podman build \
+              --layers \
+              --cache-from $IMAGE \
+              -t ghcr.io/${{ github.actor }}/eggbot:${{ github.sha }} .
+          else
+            podman build \
+              --layers \
+              -t ghcr.io/${{ github.actor }}/eggbot:${{ github.sha }} .
+          fi
 
       - name: tag image
         run: podman tag ghcr.io/${{ github.actor }}/eggbot:${{ github.sha }} ghcr.io/${{ github.actor }}/eggbot:latest
