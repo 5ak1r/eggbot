@@ -13,13 +13,12 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v3
 
-      - name: setup podman
-        uses: containers/podman-setup@v2
-        with:
-          version: 'latest'
-
       - name: login to ghcr
-        run: echo "${{ secrets.GHCR_PAT }}" | podman login ghcr.io -u ${{ github.actor }} --password-stdin
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
 
       - name: build image
         run: |
