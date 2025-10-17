@@ -1,0 +1,7 @@
+services:
+  app:
+    build: .
+    container_name: eggbot
+    environment:
+      - TOKEN=${TOKEN}
+      - MONGODB_URI=${MONGODB_URI}
