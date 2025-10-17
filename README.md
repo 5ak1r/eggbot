@@ -7,3 +7,5 @@ TODO:
 - /leaderboard command to display top server leaderboard
 - personal cooldown per person (to avoid spamming)
 - /stats command to display personal egg count
+- increment when an emote contains 'egg' (:eggplant:)
+- containerisation

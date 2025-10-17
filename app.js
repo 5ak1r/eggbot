@@ -40,9 +40,14 @@ client.on('messageCreate', async (message) => {
         {server: message.guild.id},
         {
           $inc: {count: 1},
-          $setOnInsert: {server: message.guild.id}
+          $setOnInsert: {
+            server: message.guild.id,
+          }
         },
-        {new: true, upsert: true}
+        {
+          new: true,
+          upsert: true
+        }
       )
 
       await message.reply(`Egg counter increased! Total: ${updatedEgg.count}`)
