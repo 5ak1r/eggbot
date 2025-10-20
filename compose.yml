@@ -5,3 +5,4 @@ services:
     environment:
       - TOKEN=${TOKEN}
       - MONGODB_URI=${MONGODB_URI}
+    restart: always
