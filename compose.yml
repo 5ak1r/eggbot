@@ -5,4 +5,5 @@ services:
     environment:
       - TOKEN=${TOKEN}
       - MONGODB_URI=${MONGODB_URI}
+      - BLID=${BLID}
     restart: always
