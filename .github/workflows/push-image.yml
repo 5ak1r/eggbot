@@ -1,0 +1,44 @@
+name: Build and Push Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+
+      - name: login to ghcr
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: build image
+        run: |
+          IMAGE=ghcr.io/${{ github.actor }}/eggbot:latest
+
+          if podman image exists $IMAGE; then
+            podman build \
+              --layers \
+              --cache-from $IMAGE \
+              -t ghcr.io/${{ github.actor }}/eggbot:${{ github.sha }} .
+          else
+            podman build \
+              --layers \
+              -t ghcr.io/${{ github.actor }}/eggbot:${{ github.sha }} .
+          fi
+
+      - name: tag image
+        run: podman tag ghcr.io/${{ github.actor }}/eggbot:${{ github.sha }} ghcr.io/${{ github.actor }}/eggbot:latest
+
+      - name: push image
+        run: |
+          podman push ghcr.io/${{ github.actor }}/eggbot:${{ github.sha }}
+          podman push ghcr.io/${{ github.actor }}/eggbot:latest
