@@ -72,11 +72,16 @@ client.on("messageReactionAdd", async (reaction, user) => {
     if (reaction.message.partial) await reaction.message.fetch();
 
     if (reaction.emoji.name !== "💙") return;
-    if (user.id == config.BLID) return;
+    if (user.id == config.USER_ID) return;
 
-    await reaction.message.channel.send(`Sorry ${user.displayName}, only Blue can grant blue hearts to users`);
+    const special = await reaction.message.guild.members.fetch(config.USER_ID);
+    const channel = await client.channels.fetch(config.CHANNEL_ID);
+
+    await channel.send(`Sorry ${user}, only ${special.displayName} can grant blue hearts to users`);
     await reaction.users.remove(user.id);
-  } catch (error) {
+  }
+
+  catch (error) {
     console.error(error);
   }
 });
