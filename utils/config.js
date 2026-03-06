@@ -5,7 +5,11 @@ const APPLICATION_ID = process.env.APPLICATION_ID
 const PUBLIC_KEY = process.env.PUBLIC_KEY
 const TOKEN = process.env.TOKEN
 const USER_ID = process.env.USER_ID
-const CHANNEL_ID = process.env.CHANNEL_ID
+const LEADER_ID = process.env.LEADER_ID
+const BOT_CHANNEL_ID = process.env.BOT_CHANNEL_ID
+const ANNOUNCEMENT_CHANNEL_ID = process.env.ANNOUNCEMENT_CHANNEL_ID
+const LEVEL_UP_BOT_ID = process.env.LEVEL_UP_BOT_ID
+const ROLE_LIST = process.env.ROLE_LIST.split(',');
 
 module.exports = {
   MONGODB_URI,
@@ -13,5 +17,8 @@ module.exports = {
   PUBLIC_KEY,
   TOKEN,
   USER_ID,
-  CHANNEL_ID
+  BOT_CHANNEL_ID,
+  ANNOUNCEMENT_CHANNEL_ID,
+  LEVEL_UP_BOT_ID,
+  ROLE_LIST
 }

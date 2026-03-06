@@ -4,6 +4,12 @@ Welcome to eggbot! This is a bot that records the amount of times the word "egg"
 
 ## CHANGELOG
 
+### v0.1.1
+
+We used to have a bot that would save quotes from users after they "levelled up" off of Mee6's bot. It doesn't work anymore, so I rewrote the original code from Python to JS and added it to eggbot. So now, if you have Mee6 and levels enabled, you can archive the quotes in a channel of your choice.
+
+Also, you can assign a random unique role out of a selection every time someone joins your server (one role = they all get that one)!
+
 ### v0.1.0
 
 The "💙" emoji can now only be used as a reaction by a single user.
@@ -20,7 +26,6 @@ Server specific stats. The bot increments by 1 every time a user posts a message
 TODO:
 - [ ] /eggs command to display server total without incrementing
 - [ ] /leaderboard command to display top server leaderboard
-- [ ] personal cooldown per person (to avoid spamming)
 - [ ] /stats command to display personal egg count
 - [x] increment when an emote contains 'egg' (:eggplant:)
 - [x] containerisation
