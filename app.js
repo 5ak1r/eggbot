@@ -113,8 +113,7 @@ client.on("messageCreate", async (message) => {
     try {
       await channel.send(
         `On the ${today.getDate() + day} day of ${month}, ${adj} ${user} said: *"${last.content}"*
-        ${last.attachments.size ? last.attachments.first().url : ""}
-        and reached **level ${level}**!`
+        ${last.attachments.size ? last.attachments.first().url : ""} and reached **level ${level}**!`
       );
     } catch (error) {
       console.log("failed to send: ", err);
