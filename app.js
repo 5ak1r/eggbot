@@ -55,6 +55,14 @@ client.on('guildMemberAdd', async (member) => {
 client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
 
+  if (message.content.toLowerCase().includes("hope")) {
+    await message.reply("6/6/19 Never Forget 🦝");
+  }
+})
+
+client.on("messageCreate", async (message) => {
+  if (message.author.bot || !message.guild) return;
+
   const triggers = ["egg", "🥚", "🪺", "🍆"];
 
   if (triggers.some((word) => message.content.toLowerCase().includes(word))) {
@@ -113,7 +121,7 @@ client.on("messageCreate", async (message) => {
     try {
       const msg = `On the ${today.getDate() + day} day of ${month}, ${adj} ${user} said:
         *"${last.content}"* ${last.attachments.size ? last.attachments.first().url : ""}
-        and reached **level ${level}**!`.replace(/\n/g, " ");
+        and reached **level ${level}**!`.replace(/\s*\n\s*/g, " ");
 
       await channel.send(msg);
     } catch (error) {
@@ -128,16 +136,37 @@ client.on("messageReactionAdd", async (reaction, user) => {
     if (reaction.message.partial) await reaction.message.fetch();
 
     if (reaction.emoji.name !== "💙") return;
-    if (user.id == config.USER_ID) return;
 
     const special = await reaction.message.guild.members.fetch(config.USER_ID);
-    const channel = await client.channels.fetch(config.BOT_CHANNEL_ID);
 
-    await channel.send(`Sorry ${user}, only ${special.displayName} can grant blue hearts to users`);
-    await reaction.users.remove(user.id);
+    let channel;
+    if (user.id !== config.USER_ID) {
+      channel = await client.channels.fetch(config.BOT_CHANNEL_ID);
+
+      await channel.send(`Sorry ${user}, only ${special.displayName} can grant blue hearts to users`);
+      await reaction.users.remove(user.id);
+      return;
+    }
+
+    channel = await client.channels.fetch(config.HEART_CHANNEL_ID);
+
+    const author = await reaction.message.guild.members.fetch(reaction.message.author.id);
+    const msg = `${author} achieved a Blue Heart for the following message: ${reaction.message.url}
+      ${reaction.message.attachments.size ? reaction.message.attachments.first().url : ``}`.replace(/\s*\n\s*/g, " ");
+    await channel.send(msg);
   }
 
   catch (error) {
+    if (error.code === 10007) {
+      const msg = `Unknown Member achieved a Blue Heart for the following message: ${reaction.message.url}
+        ${reaction.message.attachments.size ? reaction.message.attachments.first().url : ``}`.replace(/\s*\n\s*/g, " ");
+
+      const channel = await client.channels.fetch(config.HEART_CHANNEL_ID);
+
+      await channel.send(msg);
+      return;
+    }
+
     console.error(error);
   }
 });

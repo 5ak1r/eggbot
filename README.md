@@ -1,8 +1,14 @@
 # eggbot
 
 Welcome to eggbot! This is a bot that records the amount of times the word "egg", or an egg-related emoji is sent in your discord server!
+I'll add an actual list of features eventually.
 
 ## CHANGELOG
+
+### v0.1.2
+
+There is now a message whenever the special user reacts with a "💙" emoji.
+Also, a message triggered whenever the word "hope" is used. Inside joke.
 
 ### v0.1.1
 
