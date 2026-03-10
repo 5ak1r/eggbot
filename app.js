@@ -81,7 +81,10 @@ client.on("messageCreate", async (message) => {
         },
       );
 
-      await message.reply(`Egg counter increased! Total: ${updatedEgg.count}`);
+      await message.reply({
+        content: `Egg counter increased! Total: ${updatedEgg.count}`,
+        allowedMentions: { parse: [] }
+      });
     } catch (error) {
       console.log("Error updating", error);
     }
