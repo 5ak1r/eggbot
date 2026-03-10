@@ -56,7 +56,10 @@ client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
 
   if (message.content.toLowerCase().includes("hope")) {
-    await message.reply("6/6/19 Never Forget 🦝");
+    await message.reply({
+      content: "6/6/19 Never Forget 🦝",
+      allowedMentions: { parse: [] }
+    });
   }
 })
 
