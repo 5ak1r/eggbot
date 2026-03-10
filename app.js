@@ -111,10 +111,11 @@ client.on("messageCreate", async (message) => {
     const day = ordinals.ordinal(today.getDate());
 
     try {
-      await channel.send(
-        `On the ${today.getDate() + day} day of ${month}, ${adj} ${user} said: *"${last.content}"*
-        ${last.attachments.size ? last.attachments.first().url : ""} and reached **level ${level}**!`
-      );
+      const msg = `On the ${today.getDate() + day} day of ${month}, ${adj} ${user} said:
+        *"${last.content}"* ${last.attachments.size ? last.attachments.first().url : ""}
+        and reached **level ${level}**!`.replace(/\n/g, " ");
+
+      await channel.send(msg);
     } catch (error) {
       console.log("failed to send: ", err);
     }
