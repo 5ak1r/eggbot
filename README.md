@@ -5,6 +5,10 @@ I'll add an actual list of features eventually.
 
 ## CHANGELOG
 
+### v0.1.3
+
+No longer reliant on a third-party bot. Using Mee6's documentation, I implemented my own version of their level up system! Also, you can gain experience in this version by spending time in a voice call, since those are also server interactions! Same rate as messages, 15-25 XP/min.
+
 ### v0.1.2
 
 There is now a message whenever the special user reacts with a "💙" emoji.

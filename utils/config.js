@@ -9,7 +9,6 @@ const LEADER_ID = process.env.LEADER_ID
 const BOT_CHANNEL_ID = process.env.BOT_CHANNEL_ID
 const ANNOUNCEMENT_CHANNEL_ID = process.env.ANNOUNCEMENT_CHANNEL_ID
 const HEART_CHANNEL_ID = process.env.HEART_CHANNEL_ID
-const LEVEL_UP_BOT_ID = process.env.LEVEL_UP_BOT_ID
 const ROLE_LIST = process.env.ROLE_LIST.split(',');
 
 module.exports = {
@@ -18,9 +17,9 @@ module.exports = {
   PUBLIC_KEY,
   TOKEN,
   USER_ID,
+  LEADER_ID,
   BOT_CHANNEL_ID,
   ANNOUNCEMENT_CHANNEL_ID,
   HEART_CHANNEL_ID,
-  LEVEL_UP_BOT_ID,
   ROLE_LIST
 }

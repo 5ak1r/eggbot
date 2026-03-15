@@ -1,9 +1,13 @@
 const { Client, IntentsBitField, Partials } = require("discord.js");
 const mongoose = require("mongoose");
 const Egg = require("./models/egg");
+const Level = require("./models/level");
 
 const config = require("./utils/config");
-const ordinals = require("./utils/ordinals");
+const { SendAnnouncement } = require("./utils/announcement");
+const { GetLeaderboard } = require("./commands/leaderboard");
+
+const voiceTimes = new Map();
 
 mongoose
   .connect(config.MONGODB_URI)
@@ -24,6 +28,7 @@ const client = new Client({
   intents: [
     IntentsBitField.Flags.Guilds,
     IntentsBitField.Flags.GuildMessages,
+    IntentsBitField.Flags.GuildVoiceStates,
     IntentsBitField.Flags.MessageContent,
     IntentsBitField.Flags.GuildMessageReactions,
   ],
@@ -66,6 +71,55 @@ client.on("messageCreate", async (message) => {
 client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
 
+  messageServer = message.guild.id;
+  messageUser = message.author.id;
+
+  let user = await Level.findOne({
+    server: messageServer,
+    user: messageUser
+  });
+
+  if (!user) {
+    user = new Level({
+      server: messageServer,
+      user: messageUser
+    });
+  }
+
+  const cooldown = 60000;
+  const now = Date.now();
+
+  if (now - user.last < cooldown) return;
+
+  const addXP = Math.floor(Math.random() * 15) + 10;
+  user.xp += addXP;
+  user.last = now;
+
+  // https://github.com/Mee6/Mee6-documentation/blob/master/docs/levels_xp.md
+  const neededXP = 5 * (user.level ** 2) + 50 * user.level + 100;
+  if (user.xp > neededXP) {
+    user.level += 1;
+    user.xp -= neededXP;
+
+    message.channel.send(`Happy Birthday ${message.author}! You just reached **level ${user.level}** ! 🎉🎊🎉`);
+    await SendAnnouncement(client, message, user.level);
+  }
+
+  await user.save();
+})
+
+client.on("messageCreate", async (message) => {
+  if (message.author.bot || !message.guild) return;
+
+  if (message.content === "!leaderboard") {
+    let leaderboard = await GetLeaderboard(message);
+    message.channel.send(leaderboard);
+  }
+})
+
+client.on("messageCreate", async (message) => {
+  if (message.author.bot || !message.guild) return;
+
   const triggers = ["egg", "🥚", "🪺", "🍆"];
 
   if (triggers.some((word) => message.content.toLowerCase().includes(word))) {
@@ -93,48 +147,6 @@ client.on("messageCreate", async (message) => {
     }
   }
 });
-
-client.on("messageCreate", async (message) => {
-  if (message.author.id != config.LEVEL_UP_BOT_ID) return;
-
-  if (message.content.includes('level')) {
-    const channel = await client.channels.fetch(config.ANNOUNCEMENT_CHANNEL_ID);
-    const user = message.mentions.users.first();
-
-    const right = message.content.indexOf('level') + 5;
-    const left = message.content.indexOf('** !');
-    let level = message.content.substring(right, left).trim();
-    level = parseInt(level);
-
-    const messages = await message.channel.messages.fetch({ limit: 100 });
-    const last = messages.find(m => m.author.id === user.id);
-
-    let adj;
-    if (user.id == config.LEADER_ID) {
-      adj = "that guy";
-    } else {
-      const adjs = ["the brand new", "the young", "the educated", "the wise", "the exceptional", "the unstoppable"];
-
-      const thresholds = [5, 15, 25, 35, 49];
-      const idx = thresholds.findIndex(x => level < x);
-      adj = adjs[idx === -1 ? adjs.length - 1 : idx];
-    }
-
-    const today = new Date();
-    const month = today.toLocaleString('default', { month: 'long' });
-    const day = ordinals.ordinal(today.getDate());
-
-    try {
-      const msg = `On the ${today.getDate() + day} day of ${month}, ${adj} ${user} said:
-        *"${last.content}"* ${last.attachments.size ? last.attachments.first().url : ""}
-        and reached **level ${level}**!`.replace(/\s*\n\s*/g, " ");
-
-      await channel.send(msg);
-    } catch (error) {
-      console.log("failed to send: ", err);
-    }
-  }
-})
 
 client.on("messageReactionAdd", async (reaction, user) => {
   try {
@@ -176,6 +188,42 @@ client.on("messageReactionAdd", async (reaction, user) => {
     console.error(error);
   }
 });
+
+client.on("voiceStateUpdate", async (oldState, newState) => {
+  const userId = newState.id;
+  const channelServer = oldState.guild.id;
+
+  if (!oldState.channelId && newState.channelId) {
+    voiceTimes.set(userId, Date.now());
+  }
+
+  if (oldState.channelId && !newState.channelId) {
+    const joined = voiceTimes.get(userId);
+
+    if (!joined) return;
+
+    const spent = Date.now() - joined;
+    const minutes = spent / 60000;
+
+    let user = await Level.findOne({
+      server: channelServer,
+      user: userId
+    });
+
+    if (!user) {
+      user = new Level({
+        server: channelServer,
+        user: userId
+      });
+    }
+
+    const addXP = Math.floor(Math.random() * 15 * minutes) + 10;
+    user.xp += addXP;
+
+    await user.save();
+    voiceTimes.delete(user);
+  }
+})
 
 client
   .login(config.TOKEN)
