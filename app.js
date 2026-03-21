@@ -71,6 +71,10 @@ client.on("messageCreate", async (message) => {
 client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
 
+  if (message.member.voice.channelId && !message.member.voice.selfMute) return;
+
+  if (config.NO_EXP_CHANNEL_ID_LIST.includes(message.channelId)) return;
+
   messageServer = message.guild.id;
   messageUser = message.author.id;
 
@@ -190,40 +194,76 @@ client.on("messageReactionAdd", async (reaction, user) => {
 });
 
 client.on("voiceStateUpdate", async (oldState, newState) => {
-  const userId = newState.id;
   const channelServer = oldState.guild.id;
 
-  if (!oldState.channelId && newState.channelId) {
-    voiceTimes.set(userId, Date.now());
-  }
+  const getUsers = (channel) => channel.members.filter(m => !m.user.bot);
 
-  if (oldState.channelId && !newState.channelId) {
-    const joined = voiceTimes.get(userId);
-
+  const updateUserXP = async (id) => {
+    const joined = voiceTimes.get(id);
     if (!joined) return;
 
-    const spent = Date.now() - joined;
-    const minutes = spent / 60000;
+    const minutes = (Date.now() - joined) / 60000;
 
     let user = await Level.findOne({
       server: channelServer,
-      user: userId
+      user: id
     });
 
     if (!user) {
       user = new Level({
         server: channelServer,
-        user: userId
+        user: id
       });
     }
 
-    const addXP = Math.floor(Math.random() * 15 * minutes) + 10;
-    user.xp += addXP;
+    let xpToGain = Math.floor((10 + Math.random() * 10) * minutes);
+
+    const neededXP = 5 * (user.level ** 2) + 50 * user.level + 100;
+
+    if (user.xp + xpToGain > neededXP * 2) user.xp = neededXP * 2;
+    else user.xp += xpToGain;
 
     await user.save();
-    voiceTimes.delete(user);
-  }
-})
+  };
+
+  const handleLeave = async (state) => {
+    const users = getUsers(state.channel);
+    const size = users.size;
+
+    await updateUserXP(state.id);
+
+    if (size === 1) {
+      const lastUserId = users.first().id;
+      await updateUserXP(lastUserId);
+    }
+  };
+
+  const handleJoin = (state) => {
+    const users = getUsers(state.channel);
+    const size = users.size;
+
+    if (size < 2) return;
+
+    if (size === 2) {
+      users.forEach(member => {
+        voiceTimes.set(member.id, Date.now());
+      });
+    } else {
+      voiceTimes.set(state.id, Date.now());
+    }
+  };
+
+  if (oldState.channelId) await handleLeave(oldState);
+  if (newState.channelId) handleJoin(newState);
+
+  // cannot gain xp if muted or deafened
+  const wasMD = oldState.selfMute || oldState.serverMute || oldState.selfDeaf || oldState.serverDeaf;
+  const isMD = newState.selfMute || newState.serverMute || newState.selfDeaf || newState.serverDeaf;
+
+  // temporary treat them as leaving
+  if (!wasMD && isMD) await handleLeave(oldState);
+  if (wasMD && !isMD) handleJoin(newState);
+});
 
 client
   .login(config.TOKEN)

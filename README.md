@@ -5,6 +5,13 @@ I'll add an actual list of features eventually.
 
 ## CHANGELOG
 
+### v0.1.4
+
+Reduced XP per minute in voice call
+Cannot gain XP from voice calls while muted/deafened
+Cannot gain XP from messages while unmuted/undeafened in a voice call
+Cannot gain enough XP for multiple levels while in the voice call
+
 ### v0.1.3
 
 No longer reliant on a third-party bot. Using Mee6's documentation, I implemented my own version of their level up system! Also, you can gain experience in this version by spending time in a voice call, since those are also server interactions! Same rate as messages, 15-25 XP/min.
