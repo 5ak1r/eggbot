@@ -219,9 +219,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     let xpToGain = Math.floor((10 + Math.random() * 10) * minutes);
 
     const neededXP = 5 * (user.level ** 2) + 50 * user.level + 100;
-
-    if (user.xp + xpToGain > neededXP * 2) user.xp = neededXP * 2;
-    else user.xp += xpToGain;
+    if (user.xp + xpToGain < neededXP * 0.7) user.xp += xpToGain;
 
     await user.save();
   };
