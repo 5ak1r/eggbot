@@ -45,8 +45,6 @@ client.once("clientReady", () => {
 });
 
 client.on('guildMemberAdd', async (member) => {
-  console.log('add role started');
-
   const roles = config.ROLE_LIST;
   const chosen = roles[Math.floor(Math.random() * roles.length)];
 
@@ -196,7 +194,19 @@ client.on("messageReactionAdd", async (reaction, user) => {
 client.on("voiceStateUpdate", async (oldState, newState) => {
   const channelServer = oldState.guild.id;
 
-  const getUsers = (channel) => channel.members.filter(m => !m.user.bot);
+  const getUsers = (channel) => {
+    if (!channel) return [];
+    return channel.members.filter(m => !m.user.bot);
+  }
+
+  const isActive = (state) => {
+    return !(
+      state.selfMute ||
+      state.serverMute ||
+      state.selfDeaf ||
+      state.serverDeaf
+    );
+  };
 
   const updateUserXP = async (id) => {
     const joined = voiceTimes.get(id);
@@ -225,6 +235,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
   };
 
   const handleLeave = async (state) => {
+    if (!state.channel) return;
+
     const users = getUsers(state.channel);
     const size = users.size;
 
@@ -255,12 +267,12 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
   if (newState.channelId) handleJoin(newState);
 
   // cannot gain xp if muted or deafened
-  const wasMD = oldState.selfMute || oldState.serverMute || oldState.selfDeaf || oldState.serverDeaf;
-  const isMD = newState.selfMute || newState.serverMute || newState.selfDeaf || newState.serverDeaf;
+  const wasActive = isActive(oldState);
+  const nowActive = isActive(newState);
 
   // temporary treat them as leaving
-  if (!wasMD && isMD) await handleLeave(oldState);
-  if (wasMD && !isMD) handleJoin(newState);
+  if (wasActive && !nowActive) await handleLeave(oldState);
+  if (nowActive && !wasActive) handleJoin(newState);
 });
 
 client
