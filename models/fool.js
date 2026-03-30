@@ -1,11 +1,15 @@
 const mongoose = require('mongoose');
 
-const eggSchema = new mongoose.Schema({
+const foolSchema = new mongoose.Schema({
   server: String,
-  count: Number,
+  counts: {
+    type: Map,
+    of: Number,
+    default: {}
+  }
 })
 
-eggSchema.set('toJSON', {
+foolSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
@@ -13,4 +17,4 @@ eggSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('Egg', eggSchema)
+module.exports = mongoose.model('Fool', foolSchema)

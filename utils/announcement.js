@@ -1,5 +1,5 @@
-config = require('./config')
-ordinals = require('./ordinals')
+config = require('./config');
+ordinals = require('./ordinals');
 
 async function SendAnnouncement(client, message, level) {
   const channel = await client.channels.fetch(config.ANNOUNCEMENT_CHANNEL_ID);

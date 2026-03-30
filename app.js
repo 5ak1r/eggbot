@@ -1,6 +1,7 @@
 const { Client, IntentsBitField, Partials } = require("discord.js");
 const mongoose = require("mongoose");
 const Egg = require("./models/egg");
+const Fool = require("./models/fool");
 const Level = require("./models/level");
 
 const config = require("./utils/config");
@@ -121,7 +122,6 @@ client.on("messageCreate", async (message) => {
 
 client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
-
   const triggers = ["egg", "🥚", "🪺", "🍆"];
 
   if (triggers.some((word) => message.content.toLowerCase().includes(word))) {
@@ -147,6 +147,51 @@ client.on("messageCreate", async (message) => {
     } catch (error) {
       console.log("Error updating", error);
     }
+  }
+});
+
+client.on("messageCreate", async (message) => {
+  if (message.author.bot || !message.guild) return;
+
+  const today = new Date();
+  if (today.getDate() !== 30 || today.getMonth() !== 2 || message.channelId !== "1488306683431096441") return;
+
+  const aprilFoolsTriggers = ["the", "of", "in", "and", "john"];
+  let updates = {};
+  let needUpdate = false;
+
+  for (const word of aprilFoolsTriggers) {
+    if (message.content.toLowerCase().includes(word)) {
+      updates[`counts.${word}`] = 1;
+      needUpdate = true;
+    }
+  }
+
+  if (!needUpdate) return;
+
+  try {
+    const updatedFools = await Fool.findOneAndUpdate(
+      { server: message.guild.id },
+      {
+        $inc: updates,
+        $setOnInsert: { server: message.guild.id }
+      },
+      { new: true, upsert: true }
+    );
+
+    for (const [key, value] of Object.entries(updates)) {
+      if (value > 0) {
+        const word = key.replace(/^counts\./, "");
+        const titleWord = word.charAt(0).toUpperCase() + word.slice(1);
+
+        await message.reply({
+          content: `${titleWord} counter increased! Total: ${updatedFools.counts.get(word)}`,
+          allowedMentions: { parse: [] }
+        });
+      }
+    }
+  } catch (error) {
+    console.log("Error updating", error);
   }
 });
 

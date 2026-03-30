@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 
 const MONGODB_URI = process.env.MONGODB_URI
 const APPLICATION_ID = process.env.APPLICATION_ID
