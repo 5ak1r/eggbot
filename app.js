@@ -154,7 +154,7 @@ client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
 
   const today = new Date();
-  if (today.getDate() !== 30 || today.getMonth() !== 2 || message.channelId !== "1488306683431096441") return;
+  if (today.getDate() !== 1 || today.getMonth() !== 3) return;
 
   const aprilFoolsTriggers = ["the", "of", "in", "and", "john"];
   let updates = {};
