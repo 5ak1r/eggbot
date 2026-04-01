@@ -172,7 +172,6 @@ client.on("messageCreate", async (message) => {
   if (!needUpdate) return;
 
   try {
-    console.log("word found");
     const updatedFools = await Fool.findOneAndUpdate(
       { server: message.guild.id },
       {
