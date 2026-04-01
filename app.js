@@ -25,6 +25,8 @@ process.on("SIGINT", async () => {
   process.exit(0);
 });
 
+console.log("🥚 Welcome to Eggbot v0.1.5!");
+
 const client = new Client({
   intents: [
     IntentsBitField.Flags.Guilds,
@@ -170,6 +172,7 @@ client.on("messageCreate", async (message) => {
   if (!needUpdate) return;
 
   try {
+    console.log("word found");
     const updatedFools = await Fool.findOneAndUpdate(
       { server: message.guild.id },
       {

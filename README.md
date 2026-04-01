@@ -5,6 +5,10 @@ I'll add an actual list of features eventually.
 
 ## CHANGELOG
 
+### v0.1.5
+April Fools!!
+Also added a message that states eggbot version on startup
+
 ### v0.1.4
 
 Reduced XP per minute in voice call
