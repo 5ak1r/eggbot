@@ -25,7 +25,7 @@ process.on("SIGINT", async () => {
   process.exit(0);
 });
 
-console.log("🥚 Welcome to Eggbot v0.1.5!");
+console.log("🥚 Welcome to Eggbot v0.1.6!");
 
 const client = new Client({
   intents: [
@@ -64,6 +64,13 @@ client.on("messageCreate", async (message) => {
   if (message.content.toLowerCase().includes("hope")) {
     await message.reply({
       content: "6/6/19 Never Forget 🦝",
+      allowedMentions: { parse: [] }
+    });
+  }
+
+  if (message.content.toLowerCase() === 'f') {
+    await message.reply({
+      content: "is for <a:FurretWalk:750197791459901492>",
       allowedMentions: { parse: [] }
     });
   }

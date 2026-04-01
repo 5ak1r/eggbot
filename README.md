@@ -5,6 +5,9 @@ I'll add an actual list of features eventually.
 
 ## CHANGELOG
 
+### v0.1.6
+F is for :FurretWalk: has made its beloved return
+
 ### v0.1.5
 April Fools!!
 Also added a message that states eggbot version on startup
