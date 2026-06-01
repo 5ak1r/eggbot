@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const Egg = require("./models/egg");
 const Fool = require("./models/fool");
 const Level = require("./models/level");
+const app = express();
 
 const config = require("./utils/config");
 const { SendAnnouncement } = require("./utils/announcement");
@@ -328,6 +329,27 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
   if (wasActive && !nowActive) await handleLeave(oldState);
   if (nowActive && !wasActive) handleJoin(newState);
 });
+
+app.get("/health", (req, res) => {
+  const mongoHealth = mongoose.connection.readyState === 1;
+  const discordHealth = client.isReady();
+
+  if (mongoHealth && discordHealth) {
+    return res.status(200).json({
+      status: "healthy"
+    });
+  }
+
+  return res.status(503).json({
+    status: "unhealthy",
+    mongo: mongoHealth,
+    discord: discordHealth
+  });
+});
+
+app.listen(3000, () => {
+  console.log("Health server live on port 3000");
+})
 
 client
   .login(config.TOKEN)
