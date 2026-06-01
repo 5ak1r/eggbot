@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Egg = require("./models/egg");
 const Fool = require("./models/fool");
 const Level = require("./models/level");
-const app = express();
+const express = require("express");
 
 const config = require("./utils/config");
 const { SendAnnouncement } = require("./utils/announcement");
@@ -329,6 +329,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
   if (wasActive && !nowActive) await handleLeave(oldState);
   if (nowActive && !wasActive) handleJoin(newState);
 });
+
+const app = express();
 
 app.get("/health", (req, res) => {
   const mongoHealth = mongoose.connection.readyState === 1;
