@@ -5,6 +5,9 @@ I'll add an actual list of features eventually.
 
 ## CHANGELOG
 
+### v0.1.7
+Added automatic role assignments for when a specific level is met. Need to clean this up for more generalised level management.
+
 ### v0.1.6
 F is for :FurretWalk: has made its beloved return
 
