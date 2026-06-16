@@ -117,7 +117,7 @@ client.on("messageCreate", async (message) => {
 
     message.channel.send(`Happy Birthday ${message.author}! You just reached **level ${user.level}** ! 🎉🎊🎉`);
     await SendAnnouncement(client, message, user.level);
-    await AssignRole(client, message, user.level);
+    await AssignRole(message, user.level);
   }
 
   await user.save();

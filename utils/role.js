@@ -8,12 +8,12 @@ const levelRoles = {
   50: LEVEL_ROLE_LIST[4],
 };
 
-async function AssignRole(client, message, level) {
+async function AssignRole(message, level) {
   const newRole = levelRoles[level];
 
   if (!newRole) return;
 
-  await member.roles.add(newRole);
+  await message.member.roles.add(newRole);
 }
 
 module.exports = {
