@@ -5,6 +5,9 @@ I'll add an actual list of features eventually.
 
 ## CHANGELOG
 
+### v0.1.7.1
+Fixed for more generalised level management and accounts for when the user leaves the server and rejoins.
+
 ### v0.1.7
 Added automatic role assignments for when a specific level is met. Need to clean this up for more generalised level management.
 

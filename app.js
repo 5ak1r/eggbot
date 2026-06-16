@@ -32,6 +32,7 @@ console.log("🥚 Welcome to Eggbot v0.1.6!");
 const client = new Client({
   intents: [
     IntentsBitField.Flags.Guilds,
+    IntentsBitField.Flags.GuildMembers,
     IntentsBitField.Flags.GuildMessages,
     IntentsBitField.Flags.GuildVoiceStates,
     IntentsBitField.Flags.MessageContent,
@@ -58,6 +59,30 @@ client.on('guildMemberAdd', async (member) => {
   if (chosen) {
     await member.roles.add(role);
   }
+
+  let user = await Level.findOne({
+    server: member.guild.id,
+    user: member.id
+  });
+
+  if (!user) {
+    user = new Level({
+      server: member.guild.id,
+      user: member.id
+    });
+
+    return;
+  };
+
+  let level = null;
+  for (const i of config.LEVEL_LIST) {
+    if (i <= user.level)
+      level = i;
+  }
+
+  if (!level) return;
+
+  await AssignRole(member, level);
 });
 
 client.on("messageCreate", async (message) => {
@@ -93,13 +118,6 @@ client.on("messageCreate", async (message) => {
     user: messageUser
   });
 
-  if (!user) {
-    user = new Level({
-      server: messageServer,
-      user: messageUser
-    });
-  }
-
   const cooldown = 60000;
   const now = Date.now();
 
@@ -117,7 +135,7 @@ client.on("messageCreate", async (message) => {
 
     message.channel.send(`Happy Birthday ${message.author}! You just reached **level ${user.level}** ! 🎉🎊🎉`);
     await SendAnnouncement(client, message, user.level);
-    await AssignRole(message, user.level);
+    await AssignRole(message.member, user.level);
   }
 
   await user.save();

@@ -1,19 +1,16 @@
-const { LEVEL_ROLE_LIST } = require('./config');
+const { LEVEL_LIST, LEVEL_ROLE_LIST } = require('./config');
 
-const levelRoles = {
-  5: LEVEL_ROLE_LIST[0],
-  15: LEVEL_ROLE_LIST[1],
-  25: LEVEL_ROLE_LIST[2],
-  35: LEVEL_ROLE_LIST[3],
-  50: LEVEL_ROLE_LIST[4],
-};
+async function AssignRole(member, level) {
+  let newRole = null;
 
-async function AssignRole(message, level) {
-  const newRole = levelRoles[level];
+  for (let i = 0; i < LEVEL_LIST.length; i++) {
+    if (LEVEL_LIST[i] == level)
+      newRole = LEVEL_ROLE_LIST[i];
+  }
 
   if (!newRole) return;
 
-  await message.member.roles.add(newRole);
+  await member.roles.add(newRole);
 }
 
 module.exports = {
