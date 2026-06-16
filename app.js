@@ -7,6 +7,7 @@ const express = require("express");
 
 const config = require("./utils/config");
 const { SendAnnouncement } = require("./utils/announcement");
+const { AssignRole } = require("./utils/role");
 const { GetLeaderboard } = require("./commands/leaderboard");
 
 const voiceTimes = new Map();
@@ -110,12 +111,13 @@ client.on("messageCreate", async (message) => {
 
   // https://github.com/Mee6/Mee6-documentation/blob/master/docs/levels_xp.md
   const neededXP = 5 * (user.level ** 2) + 50 * user.level + 100;
-  if (user.xp > neededXP) {
+  if (user.xp >= neededXP) {
     user.level += 1;
     user.xp -= neededXP;
 
     message.channel.send(`Happy Birthday ${message.author}! You just reached **level ${user.level}** ! 🎉🎊🎉`);
     await SendAnnouncement(client, message, user.level);
+    await AssignRole(client, message, user.level);
   }
 
   await user.save();

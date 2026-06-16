@@ -11,6 +11,7 @@ const ANNOUNCEMENT_CHANNEL_ID = process.env.ANNOUNCEMENT_CHANNEL_ID
 const HEART_CHANNEL_ID = process.env.HEART_CHANNEL_ID
 const NO_EXP_CHANNEL_ID_LIST=process.env.NO_EXP_CHANNEL_ID_LIST
 const ROLE_LIST = process.env.ROLE_LIST.split(',');
+const LEVEL_ROLE_LIST = process.env.LEVEL_ROLE_LIST.split(',');
 
 module.exports = {
   MONGODB_URI,
@@ -23,5 +24,6 @@ module.exports = {
   ANNOUNCEMENT_CHANNEL_ID,
   HEART_CHANNEL_ID,
   NO_EXP_CHANNEL_ID_LIST,
-  ROLE_LIST
+  ROLE_LIST,
+  LEVEL_ROLE_LIST,
 }
