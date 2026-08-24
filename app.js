@@ -50,6 +50,7 @@ client.once("clientReady", () => {
   console.log(`successfully logged in as ${client.user.tag}`);
 });
 
+// user roles on join
 client.on('guildMemberAdd', async (member) => {
   const roles = config.ROLE_LIST;
   const chosen = roles[Math.floor(Math.random() * roles.length)];
@@ -85,6 +86,7 @@ client.on('guildMemberAdd', async (member) => {
   await AssignRole(member, level);
 });
 
+// hope and f is for furret (message memes)
 client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
 
@@ -103,6 +105,7 @@ client.on("messageCreate", async (message) => {
   }
 })
 
+// message xp
 client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
 
@@ -141,15 +144,19 @@ client.on("messageCreate", async (message) => {
   await user.save();
 })
 
+// xp leaderboard
 client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
 
-  if (message.content === "!leaderboard") {
-    let leaderboard = await GetLeaderboard(message);
-    message.channel.send(leaderboard);
-  }
+  const match = message.content.match(/^!leaderboard$/i);
+
+  if (!match) return;
+
+  const leaderboard = await GetLeaderboard(message);
+  message.channel.send(leaderboard);
 })
 
+// egg counter
 client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
   const triggers = ["egg", "🥚", "🪺", "🍆"];
@@ -180,6 +187,7 @@ client.on("messageCreate", async (message) => {
   }
 });
 
+// april fools
 client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
 
@@ -225,12 +233,45 @@ client.on("messageCreate", async (message) => {
   }
 });
 
+client.on("messageCreate", async (message) => {
+  if (message.author.bot || !message.guild) return;
+
+  const conversions = {
+    celsius: {
+      from: "F",
+      to: "C",
+      convert: (value) => (value - 32) / 1.8
+    },
+    fahrenheit: {
+      from: "F",
+      to: "C",
+      convert: (value) => value * 1.8 + 32
+    }
+  };
+
+  const match = message.content.match(/^!(celsius|fahrenheit)\s+(-?(?:\d+(?:\.\d*)?|\.\d+))$/i);
+
+  if (!match) return;
+
+  const [, unit, strValue] = match;
+  const conversion = conversions[unit.toLowerCase()];
+
+  const value = Number(strValue);
+  const converted = Math.round(conversion.convert(value) * 100) / 100;
+
+  await message.reply({
+    content: `${value}°${conversion.from} == ${converted}°${conversion.to}`,
+    allowedMentions: { parse: [] }
+  });
+});
+
+// blue heart reactions
 client.on("messageReactionAdd", async (reaction, user) => {
   try {
     if (reaction.partial) await reaction.fetch();
     if (reaction.message.partial) await reaction.message.fetch();
 
-    if (reaction.emoji.name !== "💙") return;
+    if (reaction.emoji.name !== "💙" && reaction.emoji.name !== config.EVIL_BLUE_NAME) return;
 
     const special = await reaction.message.guild.members.fetch(config.USER_ID);
 
@@ -246,8 +287,17 @@ client.on("messageReactionAdd", async (reaction, user) => {
     channel = await client.channels.fetch(config.HEART_CHANNEL_ID);
 
     const author = await reaction.message.guild.members.fetch(reaction.message.author.id);
-    const msg = `${author} achieved a Blue Heart for the following message: ${reaction.message.url}
-      ${reaction.message.attachments.size ? reaction.message.attachments.first().url : ``}`.replace(/\s*\n\s*/g, " ");
+
+    let msg;
+    if (reaction.emoji.name === "💙") {
+      msg = `${author} achieved a Blue Heart for the following message: ${reaction.message.url}
+        ${reaction.message.attachments.size ? reaction.message.attachments.first().url : ``}`
+        .replace(/\s*\n\s*/g, " ");
+    } else {
+      msg = `${author} received an anti-Blue heart for the following message: ${reaction.message.url}
+        ${reaction.message.attachments.size ? reaction.message.attachments.first().url : ``}. How shameful. <:stinky:1541178573317079060>`
+        .replace(/\s*\n\s*/g, " ");
+    }
     await channel.send(msg);
   }
 
@@ -266,6 +316,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
   }
 });
 
+// xp gain for voice activity
 client.on("voiceStateUpdate", async (oldState, newState) => {
   const channelServer = oldState.guild.id;
 
@@ -348,6 +399,20 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
   // temporary treat them as leaving
   if (wasActive && !nowActive) await handleLeave(oldState);
   if (nowActive && !wasActive) handleJoin(newState);
+});
+
+// add and remove role when someone joins and leaves a voice channel
+client.on("voiceStateUpdate", async (oldState, newState) => {
+  const role = newState.guild.roles.cache.get(config.MUTE_GANG_ROLE);
+  if (!role) return;
+
+  if (!oldState.channelId && newState.channelId) {
+    await newState.member.roles.add(role);
+  }
+
+  if (oldState.channelId && !newState.channelId) {
+    await oldState.member.roles.remove(role);
+  }
 });
 
 const app = express();

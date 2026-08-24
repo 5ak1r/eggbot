@@ -13,6 +13,8 @@ const NO_EXP_CHANNEL_ID_LIST=process.env.NO_EXP_CHANNEL_ID_LIST
 const ROLE_LIST = process.env.ROLE_LIST.split(',');
 const LEVEL_LIST = process.env.LEVEL_LIST.split(',');
 const LEVEL_ROLE_LIST = process.env.LEVEL_ROLE_LIST.split(',');
+const EVIL_BLUE_NAME = process.env.EVIL_BLUE_NAME
+const MUTE_GANG_ROLE = process.env.MUTE_GANG_ROLE
 
 module.exports = {
   MONGODB_URI,
@@ -28,4 +30,6 @@ module.exports = {
   ROLE_LIST,
   LEVEL_LIST,
   LEVEL_ROLE_LIST,
+  EVIL_BLUE_NAME,
+  MUTE_GANG_ROLE
 }
