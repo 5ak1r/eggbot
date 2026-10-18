@@ -243,13 +243,13 @@ client.on("messageCreate", async (message) => {
       convert: (value) => (value - 32) / 1.8
     },
     fahrenheit: {
-      from: "F",
-      to: "C",
+      from: "C",
+      to: "F",
       convert: (value) => value * 1.8 + 32
     }
   };
 
-  const match = message.content.match(/^!(celsius|fahrenheit)\s+(-?(?:\d+(?:\.\d*)?|\.\d+))$/i);
+  const match = message.content.match(/^!(c|f)\s+(-?(?:\d+(?:\.\d*)?|\.\d+))$/i);
 
   if (!match) return;
 

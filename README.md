@@ -8,7 +8,7 @@ I'll add an actual list of features eventually.
 ### v0.1.8
 Ability to hide a channel with a role, only accessible when a user joins a voice call (a mute channel)
 Added an anti-blue heart for negative messages (opposite of the blue heart functionality)
-Celsius/Fahrenheit converter, "!celsius x" converts the value x from fahrenheit to celsius
+Celsius/Fahrenheit converter, "!c x" converts the value x from fahrenheit to celsius
 
 ### v0.1.7.1
 Fixed for more generalised level management and accounts for when the user leaves the server and rejoins.
