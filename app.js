@@ -249,12 +249,13 @@ client.on("messageCreate", async (message) => {
     }
   };
 
-  const match = message.content.match(/^!(c|f)\s+(-?(?:\d+(?:\.\d*)?|\.\d+))$/i);
+  const match = message.content.match(/^!([cf])[^\s]*\s+(-?(?:\d+(?:\.\d*)?|\.\d+))$/i);
 
   if (!match) return;
 
   const [, unit, strValue] = match;
-  const conversion = conversions[unit.toLowerCase()];
+  const key = unit.toLowerCase() === "c" ? "celsius" : "fahrenheit";
+  const conversion = conversions[key];
 
   const value = Number(strValue);
   const converted = Math.round(conversion.convert(value) * 100) / 100;
