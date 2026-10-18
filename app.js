@@ -148,12 +148,41 @@ client.on("messageCreate", async (message) => {
 client.on("messageCreate", async (message) => {
   if (message.author.bot || !message.guild) return;
 
-  const match = message.content.match(/^!leaderboard$/i);
+  const match = message.content.match(/^!l[^\s]*$/i);
 
   if (!match) return;
 
   const leaderboard = await GetLeaderboard(message);
   message.channel.send(leaderboard);
+})
+
+// personal rank
+client.on("messageCreate", async (message) => {
+  if (message.author.bot || !message.guild) return;
+
+  const match = message.content.match(/^!r[^\s]*$/i);
+
+  if (!match) return;
+
+  let user = await Level.findOne({
+    server: message.guild.id,
+    user: message.author.id
+  });
+
+  if (!user) return;
+
+  const stripEmojis = (str) => str.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "");
+  const name = stripEmojis(message.member.displayName);
+
+  const neededXP = 5 * (user.level ** 2) + 50 * user.level + 100;
+  const percentage = (100 * user.xp / neededXP).toFixed(2);
+
+  const rank = `\`\`\` ${name} | Level ${user.level} | ${user.xp} / ${neededXP} (${percentage}%)\`\`\``;
+
+  await message.reply({
+    content: rank,
+    allowedMentions: { parse: [] }
+  });
 })
 
 // egg counter

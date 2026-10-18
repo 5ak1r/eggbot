@@ -5,6 +5,10 @@ I'll add an actual list of features eventually.
 
 ## CHANGELOG
 
+### v0.1.9
+!rank exists now - for anyone not in the top 20 (not on leaderboard), they can see their level and xp
+Leaderboard and !rank also show total and percentage xp required to level!
+
 ### v0.1.8
 Ability to hide a channel with a role, only accessible when a user joins a voice call (a mute channel)
 Added an anti-blue heart for negative messages (opposite of the blue heart functionality)

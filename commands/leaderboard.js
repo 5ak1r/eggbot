@@ -34,9 +34,13 @@ async function GetLeaderboard(message) {
     const rank = `${successes}`.padStart(2, "0");
     const paddedName = name.padEnd(30, " ");
     const level = `${users[i].level}`.padStart(3, " ");
-    const xp = `${users[i].xp}`.padStart(6, " ");
+    const xp = `${users[i].xp}`.padStart(5, " ");
 
-    leaderboard += `${rank}. ${paddedName} | Level ${level} | ${xp} XP\n`;
+    const neededXP = 5 * (users[i].level ** 2) + 50 * users[i].level + 100;
+    const needed = `${neededXP}`.padStart(5, " ");
+    const percentage = (100 * xp / neededXP).toFixed(2);
+
+    leaderboard += `${rank}. ${paddedName} | Level ${level} | ${xp} / ${needed} (${percentage}%) XP\n`;
 
     if (successes === max) break;
     successes++;
