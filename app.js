@@ -177,7 +177,7 @@ client.on("messageCreate", async (message) => {
   const neededXP = 5 * (user.level ** 2) + 50 * user.level + 100;
   const percentage = (100 * user.xp / neededXP).toFixed(2);
 
-  const rank = `\`\`\` ${name} | Level ${user.level} | ${user.xp} / ${neededXP} (${percentage}%)\`\`\``;
+  const rank = `\`\`\`${name} | Level ${user.level} | ${user.xp} / ${neededXP} (${percentage}%)\`\`\``;
 
   await message.reply({
     content: rank,
